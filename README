@@ -15,6 +15,6 @@ The controller: this simulator can create models of Agents, each capable of coon
 of the traffic light(s) he is controlling, check wich direction contains the highest number of cars and send a command to the simulator 
 setting the "verso" value for the next step.
 
-The controller: this simulato just receive all data from the traffic lights simulator and store them in cronological order until the end of the
+The controller: this simulator just receive all data from the traffic lights simulator and store them in cronological order until the end of the
 simulation, when he will print them.
 
