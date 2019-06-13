@@ -2,7 +2,7 @@ This is a collection of different variations of the Mosaik core build, along wit
 
 All this material is just a personal modification of Mosaik. The original version can be found at https://mosaik.readthedocs.io/en/latest/
 
-In the following examples we will always use the same 3 simulators: a traffic light simulator, a controller and a collector of data.
+In the following examples we will mostly use the same 3 simulators: a traffic light simulator, a controller and a collector of data.
 
 The traffic light simulator: this simulator can create many models of traffic lights, each with their own attributes. The attributes for each 
 model are a "queue" for each direction (N, S, E, W) merged into an array, a "verso" that shows which queues are allowed to move in the 
