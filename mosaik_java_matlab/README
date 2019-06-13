@@ -8,8 +8,8 @@ causing some problems in the code, so i switched to recently introduced matlab b
 
 First of all a big WARNING about using matlab with this configuration: as for now it only works if launched by python (same machine), but I
 think it shouldn't be a problem to make it work in remote control. Also for how matlab works and this API was implemented the SIM_ID of 
-a simulator in python will be something like sim-0.model_0, while in matlab it will be something like sim_0_model_0(there are some
-problems with "." in names in matlab and the functions that manage JSON. I already made the communication more stable by assuring that 
+a simulator in python will be something like sim-0.model_0, while in matlab it will be something like sim_0_model_0 (there are some
+problems with "." in names in matlab and the functions that manage JSON). I already made the communication more stable by assuring that 
 even if they call their simulators in different ways, mosaik and matlab still know who they are talking about.
 
 How to build a mosaik compatible simulator in matlab:
