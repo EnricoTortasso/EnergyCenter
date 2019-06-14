@@ -1,4 +1,4 @@
-This is a collection of information, examples and files to help connecting simulators in java (not bad) and matlab (which i hate) to mosaik.
+This is a collection of information, examples and files to help connecting simulators in java and matlab to mosaik.
 
 The matlab high API functionalities were taken from here: https://github.com/hesstobi/matlab-mosaik-toolbox
 Unfortunately this build is today (june 2019) 3 years old. Matlab and Mosaik have changed a lot in this period so i was expecting some 
