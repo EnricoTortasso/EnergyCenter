@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<addonCore>
+
+  <label>Mosaik-Toolbox</label>
+
+  <version>1.0</version>
+
+  <type>Toolbox</type>
+
+  <identifier>801dc8a2-fa96-4544-851f-4570d3c8438f</identifier>
+
+  <summary>This toolbox provides a high-level API for the Mosaik co-simulation framework (https://mosaik.offis.de/)</summary>
+
+  <createdBy name="Tobias Hess"/>
+
+  <image>resources/screenshot.png</image>
+
+</addonCore>
