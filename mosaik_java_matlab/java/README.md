@@ -18,3 +18,4 @@ correttamente.
 
 I due file .jar all'interno di Simulazione_java sono quelli che contengono tutte le funzioni e le utilities 
 dell'API per java, quindi vanno inserite nei progetti dei simulatori che si vogliono collegare a mosaik.
+Possono anche essere trovati qui https://bitbucket.org/mosaik/mosaik-api-java/src/master/
