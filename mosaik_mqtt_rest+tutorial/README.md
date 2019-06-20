@@ -69,202 +69,180 @@ per prima cosa creiamo un simulatore classico che funziona con mosaik.
 
 
 
-
-
-
 Questo è un simulatore banale i cui modelli possiedono un solo attributo x. Si nota che sono presenti i metodi init, create, step e 
 get_data. 
 aggiungiamo un controllore banale che incrementa x di 1 se x è minore di 6, altrimenti lo decrementa di 2.
 
 
+	import mosaik_api
 
 
-
-import mosaik_api
-
-
-META = {
-    'models': {
-        'Agent': {
-            'public': True,
-            'params': [],
-            'attrs': ['x'],
-        },
-    },
-}
+	META = {
+	    'models': {
+		'Agent': {
+		    'public': True,
+		    'params': [],
+		    'attrs': ['x'],
+		},
+	    },
+	}
 
 
-class Controller(mosaik_api.Simulator):
-    def __init__(self):
-        super().__init__(META)
-        self.agents = []
+	class Controller(mosaik_api.Simulator):
+	    def __init__(self):
+		super().__init__(META)
+		self.agents = []
 
-    def create(self, num, model):
-        n_agents = len(self.agents)
-        entities = []
-        for i in range(n_agents, n_agents + num):
-            eid = 'Agent_%d' % i
-            self.agents.append(eid)
-            entities.append({'eid': eid, 'type': model})
+	    def create(self, num, model):
+		n_agents = len(self.agents)
+		entities = []
+		for i in range(n_agents, n_agents + num):
+		    eid = 'Agent_%d' % i
+		    self.agents.append(eid)
+		    entities.append({'eid': eid, 'type': model})
 
-        return entities
+		return entities
 
-    def step(self, time, inputs):
-        commands = {}
-        for agent_eid, attrs in inputs.items():
-            values = attrs.get('x', {})
-            for model_eid, value in values.items():
-                if value > 5:
-                    data = -2
-                else:
-                    data = 1
+	    def step(self, time, inputs):
+		commands = {}
+		for agent_eid, attrs in inputs.items():
+		    values = attrs.get('x', {})
+		    for model_eid, value in values.items():
+			if value > 5:
+			    data = -2
+			else:
+			    data = 1
 
-                if agent_eid not in commands:
-                    commands[agent_eid] = {}
-                if model_eid not in commands[agent_eid]:
-                    commands[agent_eid][model_eid] = {}
-                commands[agent_eid][model_eid]['x'] = data
+			if agent_eid not in commands:
+			    commands[agent_eid] = {}
+			if model_eid not in commands[agent_eid]:
+			    commands[agent_eid][model_eid] = {}
+			commands[agent_eid][model_eid]['x'] = data
 
-        yield self.mosaik.set_data(commands)
+		yield self.mosaik.set_data(commands)
 
-        return time + 60
-
-
-def main():
-    return mosaik_api.start_simulation(Controller())
+		return time + 60
 
 
-if __name__ == '__main__':
-    main()
+	def main():
+	    return mosaik_api.start_simulation(Controller())
 
 
-
+	if __name__ == '__main__':
+	    main()
 
 
 e infine aggiungiamo un collettore che prenda i dati che vogliamo salvare (in questo caso x).
 
 
+	import collections
+	import mosaik_api
 
 
-
-import collections
-import mosaik_api
-
-
-META = {
-    'models': {
-        'Monitor': {
-            'public': True,
-            'any_inputs': True,
-            'params': [],
-            'attrs': [],
-        },
-    },
-}
+	META = {
+	    'models': {
+		'Monitor': {
+		    'public': True,
+		    'any_inputs': True,
+		    'params': [],
+		    'attrs': [],
+		},
+	    },
+	}
 
 
-class Collector(mosaik_api.Simulator):
-    def __init__(self):
-        super().__init__(META)
-        self.eid = None
-        self.data = collections.defaultdict(lambda:
-                                            collections.defaultdict(list))
-        self.step_size = None
+	class Collector(mosaik_api.Simulator):
+	    def __init__(self):
+		super().__init__(META)
+		self.eid = None
+		self.data = collections.defaultdict(lambda:
+						    collections.defaultdict(list))
+		self.step_size = None
 
-    def init(self, sid, step_size):
-        self.step_size = step_size
-        return self.meta
+	    def init(self, sid, step_size):
+		self.step_size = step_size
+		return self.meta
 
-    def create(self, num, model):
-        if num > 1 or self.eid is not None:
-            raise RuntimeError('Can only create one instance of Monitor.')
+	    def create(self, num, model):
+		if num > 1 or self.eid is not None:
+		    raise RuntimeError('Can only create one instance of Monitor.')
 
-        self.eid = 'Monitor'
-        return [{'eid': self.eid, 'type': model}]
+		self.eid = 'Monitor'
+		return [{'eid': self.eid, 'type': model}]
 
-    def step(self, time, inputs):
-        data = inputs[self.eid]
-        for attr, values in data.items():
-            for src, value in values.items():
-                self.data[src][attr].append(value)
+	    def step(self, time, inputs):
+		data = inputs[self.eid]
+		for attr, values in data.items():
+		    for src, value in values.items():
+			self.data[src][attr].append(value)
 
-        return time + self.step_size
+		return time + self.step_size
 
-    def finalize(self):
-        print('Collected data:')
-        for sim, sim_data in sorted(self.data.items()):
-            print('- %s:' % sim)
-            for attr, values in sorted(sim_data.items()):
-                print('  - %s: %s' % (attr, values))
-
-
-if __name__ == '__main__':
-    mosaik_api.start_simulation(Collector())
+	    def finalize(self):
+		print('Collected data:')
+		for sim, sim_data in sorted(self.data.items()):
+		    print('- %s:' % sim)
+		    for attr, values in sorted(sim_data.items()):
+			print('  - %s: %s' % (attr, values))
 
 
-
+	if __name__ == '__main__':
+	    mosaik_api.start_simulation(Collector())
 
 
 A questo punto aggiungiamo il main di mosaik per far partire la simulazione
 
+	import mosaik.util
 
+	SIM_CONFIG = {
+	    'ExSim': {
+		'python': 'exSimulator:ExSim',
+	    },
+	    'ExampleCtrl': {
+		'python': 'controller:Controller',
+	    },
+	    'Collector': {
+		'cmd': 'python collector.py %(addr)s',
+	    },
+	}
 
+	END = 10 * 600  # 10 minutes
 
-import mosaik.util
+	world = mosaik.World(SIM_CONFIG)
 
+	examplesim = world.start('ExSim', eid_prefix='Model_')
+	examplectrl = world.start('ExampleCtrl')
+	collector = world.start('Collector', step_size=60)
 
-SIM_CONFIG = {
-    'ExSim': {
-        'python': 'exSimulator:ExSim',
-    },
-    'ExampleCtrl': {
-        'python': 'controller:Controller',
-    },
-    'Collector': {
-        'cmd': 'python collector.py %(addr)s',
-    },
-}
+	model = examplesim.ExModel()
+	agent = examplectrl.Agent()
+	monitor = collector.Monitor()
 
-END = 10 * 600  # 10 minutes
+	world.connect(model, agent, 'x', async_requests=True)
+	world.connect(model, monitor,'x', async_requests=True)
 
-world = mosaik.World(SIM_CONFIG)
-
-examplesim = world.start('ExSim', eid_prefix='Model_')
-examplectrl = world.start('ExampleCtrl')
-collector = world.start('Collector', step_size=60)
-
-model = examplesim.ExModel()
-agent = examplectrl.Agent()
-monitor = collector.Monitor()
-
-world.connect(model, agent, 'x', async_requests=True)
-world.connect(model, monitor,'x', async_requests=True)
-
-world.run(until=END)
-
-
+	world.run(until=END)
 
 
 Così come è adesso funziona come una normale simulazione standard di mosaik. Per aggiungere le modalità di comunicazione in 
-mqtt e in http dobbiamo sostituire le funzioni init() con init_plus() e step() con step_plus() (basta cambiare il nome).
-Facendo questo lasciamo a mosaik il controllo sulla init() e sulla step() "standard", facendogli creare i client mqtt e/o http 
-nella init() e gestendoli nella step(). Questa modifica va fatta SOLO nei simulatori a cui vogliamo aggiungere queste funzionalità,
-tutti gli altri possono rimanere nella forma normale. Inoltre se nella step() è presente una set_data(),
+mqtt e in http dobbiamo sostituire le funzioni **init()** con **init_plus()** e **step()** con **step_plus()** (basta cambiare il nome).
+Facendo questo lasciamo a mosaik il controllo sulla **init()** e sulla **step()** "standard", facendogli creare i client mqtt e/o http 
+nella **init()** e gestendoli nella **step()**. Questa modifica va fatta **SOLO** nei simulatori a cui vogliamo aggiungere queste funzionalità, tutti gli altri possono rimanere nella forma normale. Inoltre se nella **step()** è presente una **set_data()**,
 
-es. il controllore
+es. il controller
 
-step()
+	step()
 
-	...
-	yield self.mosaik.set_data(commands)
-        return time + 60
+		...
+		yield self.mosaik.set_data(commands)
+		return time + 60
 
-la step_plus() dovrà essere:
+la **step_plus()** dovrà essere:
 
-step_plus()
+	step_plus()
 
-	...
-        return time + 60, commands
+		...
+		return time + 60, commands
 
 quindi i comandi che andrebbero nella yield vengono ritornati normalmente, si occuperà poi mosaik di gestirli.
 
@@ -272,33 +250,35 @@ quindi i comandi che andrebbero nella yield vengono ritornati normalmente, si oc
 Ora bisogna dire quale servizio vogliamo utilizzare e altre varie informazioni utili alla connessione. Per farlo dobbiamo 
 passare un dizionario contenente tutti i dati necessari durante la init().
 
+## http/rest
+
 Ipotizziamo che il nostro simulatore voglia chiedere ogni 10 secondi il valore di x a un sensore che comunica tramite http/rest.
 Il dizionario che dovremo passare durante la init() sarà:
 
-rest = {
-    "address": "127.0.0.1:8000",		#questo è il server http a cui connettersi, in questo caso un server sulla stessa macchina
-    "attrs": {					#questo è il dizionario che contiene le informazioni relative ad ogni attributo
-        "x": {					#ogni attributo indica: 
-            "GET": "/x.txt",			#	l'url a cui richiedere il dato,
-            "timeout": "10"			#	il tempo tra una richiesta e l'altra
-            }
-        }
-    }
+	rest = {
+	    "address": "127.0.0.1:8000",		#questo è il server http a cui connettersi, in questo caso un server sulla stessa 								macchina
+	    "attrs": {					#questo è il dizionario che contiene le informazioni relative ad ogni attributo
+		"x": {					#ogni attributo indica: 
+		    "GET": "/x.txt",			#	l'url a cui richiedere il dato,
+		    "timeout": "10"			#	il tempo tra una richiesta e l'altra
+		    }
+		}
+	    }
 
-perciò nel main di mosaik quando si chiama la init() del simulatore dovremo passare anche il dizionario rest come parametro:
+perciò nel main di mosaik quando si chiama la **init()** del simulatore dovremo passare anche il dizionario rest come parametro:
 
-examplesim = world.start('ExSim', eid_prefix='Model_', rest=rest)
+	examplesim = world.start('ExSim', eid_prefix='Model_', rest=rest)
 
 
 Fatto ciò torniamo nel nostro simulatore. Infatti ora grazie a questi cambiamenti ogni 10 secondi il simulatore chiederà il dato al 
 server indicato, salvando la risposta in un nuovo attributo di dipo dizionario : rest_commands. La struttura di questo dizionario è
 molto semplice:
 
-rest_commands = {
-		attr1 : val1,
-		attr2 : val2,
-		...	... ,
-		}
+	rest_commands = {
+			attr1 : val1,
+			attr2 : val2,
+			...	... ,
+			}
 
 Possiamo quindi modificare il metodo step_plus() per poter usare i dati ottenuti dal sensore.
 Bisogna tenere conto che a questo punto diventa compito del programmatore decidere come usare i dati. I vari val1, val2, ecc.. sono tutti
@@ -332,39 +312,36 @@ eliminiamo la chiave x dal dizionario (quando arriverà un nuovo dato questa ver
         return time + 60  
 
 
-
 A questo punto per provare se la nostra simulazione funziona creiamo un server sulla nostra macchina in ascolto alla porta 8000:
 
 
+	import http.server
+	import socketserver
 
-import http.server
-import socketserver
+	PORT = 8000
 
-PORT = 8000
+	Handler = http.server.SimpleHTTPRequestHandler
 
-Handler = http.server.SimpleHTTPRequestHandler
-
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print("serving at port", PORT)
-    httpd.serve_forever()
+	with socketserver.TCPServer(("", PORT), Handler) as httpd:
+	    print("serving at port", PORT)
+	    httpd.serve_forever()
 
 
 
 Nella stessa cartella mettiamo il file da cui riceveremo il dato richiesto e infine modifichiamo il main di mosaik per fare durare la
 simulazione abbastanza da permettere che scadano i 10 secondi di timeout.
 
-
-END = 10 * 600
-world.run(until=END, rt_factor=0.01)
-
+	END = 10 * 600
+	world.run(until=END, rt_factor=0.01)
 
 In questo modo la simulazione durerà un minuto. Verifichiamo l'andamento di x:
 
-[0, 1, 2, 3, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 15, 13, 11, 9, 7, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 15, 13, 11, ...
+[0, 1, 2, 3, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, **15**, 13, 11, 9, 7, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, **15**, 13, 11, ...
 
 Si nota chiaramente che dopo un certo intervallo il valore di x viene impostato a 15 proprio come volevamo, e ogni volta che scade il 
 timeout il processo si ripete.
 
+## mqtt + http/rest
 
 Vediamo ora come inserire anche la comunicazione tramite mqtt.
 
@@ -448,19 +425,20 @@ arrivati e poi eliminarli, quindi step_plus() sarà:
 
 Come prima avviamo il server http, il main di mosaik e il sensore e osserviamo l'output della simulazione.
 
-[0, 1, 2, 3, 4, 20, 18, 16, 14, 12, 10, 8, 6, 0, 1, 2, 3, 4, 5, 6, 4, 5, 20, 18, 16, 14, 12, 10, 8, 6, 4, 5, 6, 4, 5, 6, 4, 5, 15, 13, 11, 9, 7, 5, 6, 4, 5, 100, 98, 96]
+[0, 1, 2, 3, 4, **20**, 18, 16, 14, 12, 10, 8, 6, **0**, 1, 2, 3, 4, 5, 6, 4, 5, **20**, 18, 16, 14, 12, 10, 8, 6, 4, 5, 6, 4, 5, 6, 4, 5, **15**, 13, 11, 9, 7, 5, 6, 4, 5,**100**, 98, 96]
 
 il primo messaggio è ricevuto tramite mqtt e imposta il valore di x a 20. Dopo 5 secondi arriva un'altro messaggio che lo imposta a 0 e 
 dopo altri 5 nuovamente a 20. Ora per 15 secondi mqtt non manderà più messaggi, facendo scadere il timeout e forzando il simulatore a 
 effettuare una richiesta tramite http. Il messaggio di risposta riporta il valore di x a 15, mentre dopo circa 5 secondi mqtt porta il 
 valore a 100
 
+## mqtt
 
 Ora vediamo l'ultimo caso in cui vogliamo usare solo mqtt:
 
-Per dire a mosaik che il simulatore useà solo mqtt basta non passargli alcun attributo rest.
+Per dire a mosaik che il simulatore userà solo mqtt basta non passargli alcun attributo rest.
 
-[0, 1, 2, 3, 20, 18, 16, 14, 12, 10, 8, 6, 0, 1, 2, 3, 4, 5, 6, 4, 20, 18, 16, 14, 12, 10, 8, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 100, 98, 96, 94, 92]
+[0, 1, 2, 3, **20**, 18, 16, 14, 12, 10, 8, 6, **0**, 1, 2, 3, 4, 5, 6, 4, **20**, 18, 16, 14, 12, 10, 8, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, **100**, 98, 96, 94, 92]
 
 questo è il risultato di una run con gli stessi parametri di quella precedente, ma senza aver passato il parametro rest.
 Osserviamo che adesso c'è un buco di 15 secondi in cui il sensore mqtt non manda messaggi e nient'altro modifica l'andamento del valore
