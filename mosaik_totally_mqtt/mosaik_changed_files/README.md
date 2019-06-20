@@ -22,7 +22,7 @@ traffic on the network.
 
 
 WARNING:
-this implementation using only mosaik come with 2 major costs:
+this implementation using only mqtt come with 2 major costs:
 1)as for now all the simulators can only use MQTT, no hybrid protocol is permitted;
-2)the program can run slower than the original mosaik framework due to the changes I made in the code, in particular the Semaphore I implemeted
-to wait for sincronization between mosaik and the simulators.
+2)the program will probably run slower than the original mosaik framework due to the changes I made in the code, in particular the Semaphore I 
+implemeted to wait for sincronization between mosaik and the simulators.
