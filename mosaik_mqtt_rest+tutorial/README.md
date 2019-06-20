@@ -234,7 +234,7 @@ es. il controller
 	step()
 
 		...
-		yield self.mosaik.set_data(commands)
+		**yield** self.mosaik.set_data(**commands**)
 		return time + 60
 
 la **step_plus()** dovrà essere:
@@ -242,7 +242,7 @@ la **step_plus()** dovrà essere:
 	step_plus()
 
 		...
-		return time + 60, commands
+		**return** time + 60, **commands**
 
 quindi i comandi che andrebbero nella yield vengono ritornati normalmente, si occuperà poi mosaik di gestirli.
 
