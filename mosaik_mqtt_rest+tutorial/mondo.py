@@ -23,7 +23,7 @@ mosaik_config = {
 	'stop_timeout': 10,  # seconds
 }
 
-END = 10 * 600  # 10 minutes
+END = 50 * 60  # 10 minutes
 
 # Create World
 world = mosaik.World(SIM_CONFIG)
@@ -35,18 +35,21 @@ rest = {
         "x": {
             "GET": "/x.txt",
             "timeout": "10"
-            }
         }
     }
-
-mqtt = {
-	"x" : {
-		"topic" : "test/sensor1/x",
-		"timeout_reset" : True
-	}
 }
 
-examplesim = world.start('ExSim', eid_prefix='Model_', rest=rest, mqtt=mqtt)
+mqtt = {
+    "broker": "127.0.0.1",
+    "attrs": {
+        "x": {
+            "topic": "test/sensor1/x",
+            "timeout_reset": True
+        }
+    }
+}
+
+examplesim = world.start('ExSim', eid_prefix='Model_', mqtt=mqtt)
 examplectrl = world.start('ExampleCtrl')
 collector = world.start('Collector', step_size=60)
 

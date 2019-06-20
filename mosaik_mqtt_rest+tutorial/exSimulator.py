@@ -48,7 +48,13 @@ class ExSim(mosaik_api.Simulator):
                     eid, x = x.split(":")
                     self.models[eid] = int(x)
                     del self.rest_commands["x"]
-
+        if hasattr(self, "mqtt_commands"):
+            if self.mqtt_commands != {}:
+                x = self.mqtt_commands.get("x", None)
+                if x is not None:
+                    eid, x = x.split(":")
+                    self.models[eid] = int(x)
+                    del self.mqtt_commands["x"]
 
         return time + 60
 

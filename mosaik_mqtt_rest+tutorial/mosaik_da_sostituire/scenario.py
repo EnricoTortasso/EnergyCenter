@@ -30,7 +30,6 @@ base_config = {
 FULL_ID = simmanager.FULL_ID
 
 def on_message(client, userdata, message):
-    print(message.payload)
     path = message.topic.split('/')
     if "tmp" not in client.world.commands:
         client.world.commands["tmp"]= {}
