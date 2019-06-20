@@ -49,7 +49,7 @@ mqtt = {
     }
 }
 
-examplesim = world.start('ExSim', eid_prefix='Model_', mqtt=mqtt)
+examplesim = world.start('ExSim', eid_prefix='Model_', mqtt=mqtt, rest=rest)
 examplectrl = world.start('ExampleCtrl')
 collector = world.start('Collector', step_size=60)
 
