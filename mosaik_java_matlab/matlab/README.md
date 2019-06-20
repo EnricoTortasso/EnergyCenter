@@ -1,7 +1,6 @@
 I take no credit for this work: I downloaded it from https://github.com/hesstobi/matlab-mosaik-toolbox.
 I updated it to make it work with recent versions of mosaik and matlab.
 
-The matlab high API functionalities were taken from here: https://github.com/hesstobi/matlab-mosaik-toolbox
 Unfortunately this build is today (june 2019) 3 years old. Matlab and Mosaik have changed a lot in this period so i was expecting some 
 problems.
 This build relies on a (community-made i think) library called JSONlab, which can transform data in JSON and vice versa. This library was 
@@ -18,7 +17,7 @@ still know who they are talking about.
 
 How to build a mosaik compatible simulator in matlab:
   
-  In first place ous simulator must be a subclass ( i don't know if matlab call that in this way) of the ModelSimulator class.
+  In first place our simulator must be a subclass ( i don't know if matlab call that in this way) of the ModelSimulator class.
   
     classdef ExampleSim < MosaikAPI.ModelSimulator
     
@@ -40,7 +39,7 @@ How to build a mosaik compatible simulator in matlab:
   Ok the core body of our simulator is complete. You can add as many other functions as you want.
   
 Our simulator now needs the model that we put in its properties.
-This is how a model in matlab should be buit to be used:
+This is how a model in matlab should be built to be used:
   It must me a subclass of the Model class:
   
     classdef ExModel < MosaikAPI.Model
