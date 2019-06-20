@@ -1,6 +1,6 @@
 This is a collection of information, examples and files to help connecting simulators in java and matlab to mosaik.
 
-to start:
+#*to start:*#
 
 change the simmanager.py in the python installation folder with the one in the mosaik folder;
 
