@@ -78,7 +78,7 @@ class World:
         self.client.on_message = on_message
         self.client.connect("127.0.0.1")
         self.client.loop_start()
-        self.client.subscribe("#")
+        self.client.subscribe("mosaik/commands")
 
         self.sim_config = sim_config
         """The config dictionary that tells mosaik how to start a simulator."""

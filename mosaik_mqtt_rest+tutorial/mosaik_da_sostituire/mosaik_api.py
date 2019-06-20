@@ -53,10 +53,12 @@ _LOG_LEVELS = {
 def on_message(client, userdata, message):
 
     path = message.topic
-    attr = client.sim.mqtt[path]
-
-    if path[1]=="in":
-        pass
+    for attr, data in client.sim.mqtt["attrs"].items():
+        topic = data.get("topic", None)
+        if path == topic:
+            client.sim.mqtt_commands[attr] = message.payload.decode("utf-8")
+            if data.get("timeout_reset", False):
+                client.sim.last_update[attr] = datetime.now()
 
 
 # NOTE: We don't use an ABC here, because the effort of making it py2 AND py3
@@ -147,11 +149,11 @@ class Simulator(object):
             self.client = paho.Client(sid)  # create new instance
             self.client.on_message = on_message
             setattr(self.client, "sim", self)
-            self.client.connect(broker_address)  # connect to broker
+            self.client.connect(mqtt["broker"])  # connect to broker
             self.client.loop_start()  # start the loop
             self.client.subscribe(sid+"/in/#")
-            for attr, topic in mqtt:
-                self.client.subscribe(topic)
+            for attr, data in mqtt["attrs"].items():
+                self.client.subscribe(data["topic"])
 
             self.mqtt_commands = {}
             del sim_params["mqtt"]
