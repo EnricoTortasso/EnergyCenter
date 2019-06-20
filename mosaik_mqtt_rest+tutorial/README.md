@@ -1,80 +1,80 @@
-Tutorial: come costruire un simulatore che comunichi con mqtt e/o http(rest)
+# Tutorial: come costruire un simulatore che comunichi con mqtt e/o http(rest)
+
 per prima cosa creiamo un simulatore classico che funziona con mosaik.
 
 
+	import mosaik_api
 
-import mosaik_api
-
-META = {
-    'models': {
-        'ExModel': {
-            'public': True,
-            'params': [],
-            'attrs': ['x'],
-        },
-    },
-}
-
-
-class ExSim(mosaik_api.Simulator):
-    def __init__(self):
-        super().__init__(META)
-        self.eid_prefix = "exModel"
-        self.models = {}
-
-    def init(self, sid, eid_prefix=None):
-        if eid_prefix is not None:
-            self.eid_prefix = eid_prefix
-        return self.meta
-
-    def create(self, num, model):
-        next_eid = len(self.entities)
-        entities = []
-
-        for i in range(next_eid, next_eid + num):
-            eid = '%s%d' % (self.eid_prefix, i)
-            self.models[eid] = 0
-            entities.append({'eid': eid, 'type': model})
-
-        return entities
-
-    def step(self, time, inputs):
-
-        for eid, attrs in inputs.items():
-            for attr, values in attrs.items():
-                for src, val in values.items():
-                    self.models[eid] += val
-
-        return time + 60  
-
-    def get_data(self, outputs):
-        data = {}
-        for eid, attrs in outputs.items():
-            data[eid] = {}
-            for attr in attrs:
-                if attr not in self.meta['models']['ExModel']['attrs']:
-                    raise ValueError('Unknown output attribute: %s' % attr)
-
-                data[eid][attr] = self.models[eid]
-
-        return data
+	META = {
+	    'models': {
+		'ExModel': {
+		    'public': True,
+		    'params': [],
+		    'attrs': ['x'],
+		},
+	    },
+	}
 
 
-def main():
-    return mosaik_api.start_simulation(ExSim())
+	class ExSim(mosaik_api.Simulator):
+	    def __init__(self):
+		super().__init__(META)
+		self.eid_prefix = "exModel"
+		self.models = {}
+
+	    def init(self, sid, eid_prefix=None):
+		if eid_prefix is not None:
+		    self.eid_prefix = eid_prefix
+		return self.meta
+
+	    def create(self, num, model):
+		next_eid = len(self.entities)
+		entities = []
+
+		for i in range(next_eid, next_eid + num):
+		    eid = '%s%d' % (self.eid_prefix, i)
+		    self.models[eid] = 0
+		    entities.append({'eid': eid, 'type': model})
+
+		return entities
+
+	    def step(self, time, inputs):
+
+		for eid, attrs in inputs.items():
+		    for attr, values in attrs.items():
+			for src, val in values.items():
+			    self.models[eid] += val
+
+		return time + 60  
+
+	    def get_data(self, outputs):
+		data = {}
+		for eid, attrs in outputs.items():
+		    data[eid] = {}
+		    for attr in attrs:
+			if attr not in self.meta['models']['ExModel']['attrs']:
+			    raise ValueError('Unknown output attribute: %s' % attr)
+
+			data[eid][attr] = self.models[eid]
+
+		return data
 
 
-if __name__ == '__main__':
-    main()
+	def main():
+	    return mosaik_api.start_simulation(ExSim())
 
+
+	if __name__ == '__main__':
+	    main()
 
 
 
 
 
-Questo Ë un simulatore banale i cui modelli possiedono un solo attributo x. Si nota che sono presenti i metodi init, create, step e 
+
+Questo √® un simulatore banale i cui modelli possiedono un solo attributo x. Si nota che sono presenti i metodi init, create, step e 
 get_data. 
-aggiungiamo un controllore banale che incrementa x di 1 se x Ë minore di 6, altrimenti lo decrementa di 2.
+aggiungiamo un controllore banale che incrementa x di 1 se x √® minore di 6, altrimenti lo decrementa di 2.
 
 
 
@@ -245,11 +245,11 @@ world.run(until=END)
 
 
 
-CosÏ come Ë adesso funziona come una normale simulazione standard di mosaik. Per aggiungere le modalit‡ di comunicazione in 
+Cos√¨ come √® adesso funziona come una normale simulazione standard di mosaik. Per aggiungere le modalit√† di comunicazione in 
 mqtt e in http dobbiamo sostituire le funzioni init() con init_plus() e step() con step_plus() (basta cambiare il nome).
 Facendo questo lasciamo a mosaik il controllo sulla init() e sulla step() "standard", facendogli creare i client mqtt e/o http 
-nella init() e gestendoli nella step(). Questa modifica va fatta SOLO nei simulatori a cui vogliamo aggiungere queste funzionalit‡,
-tutti gli altri possono rimanere nella forma normale. Inoltre se nella step() Ë presente una set_data(),
+nella init() e gestendoli nella step(). Questa modifica va fatta SOLO nei simulatori a cui vogliamo aggiungere queste funzionalit√†,
+tutti gli altri possono rimanere nella forma normale. Inoltre se nella step() √® presente una set_data(),
 
 es. il controllore
 
@@ -259,25 +259,25 @@ step()
 	yield self.mosaik.set_data(commands)
         return time + 60
 
-la step_plus() dovr‡ essere:
+la step_plus() dovr√† essere:
 
 step_plus()
 
 	...
         return time + 60, commands
 
-quindi i comandi che andrebbero nella yield vengono ritornati normalmente, si occuper‡ poi mosaik di gestirli.
+quindi i comandi che andrebbero nella yield vengono ritornati normalmente, si occuper√† poi mosaik di gestirli.
 
   
 Ora bisogna dire quale servizio vogliamo utilizzare e altre varie informazioni utili alla connessione. Per farlo dobbiamo 
 passare un dizionario contenente tutti i dati necessari durante la init().
 
 Ipotizziamo che il nostro simulatore voglia chiedere ogni 10 secondi il valore di x a un sensore che comunica tramite http/rest.
-Il dizionario che dovremo passare durante la init() sar‡:
+Il dizionario che dovremo passare durante la init() sar√†:
 
 rest = {
-    "address": "127.0.0.1:8000",		#questo Ë il server http a cui connettersi, in questo caso un server sulla stessa macchina
-    "attrs": {					#questo Ë il dizionario che contiene le informazioni relative ad ogni attributo
+    "address": "127.0.0.1:8000",		#questo √® il server http a cui connettersi, in questo caso un server sulla stessa macchina
+    "attrs": {					#questo √® il dizionario che contiene le informazioni relative ad ogni attributo
         "x": {					#ogni attributo indica: 
             "GET": "/x.txt",			#	l'url a cui richiedere il dato,
             "timeout": "10"			#	il tempo tra una richiesta e l'altra
@@ -285,13 +285,13 @@ rest = {
         }
     }
 
-perciÚ nel main di mosaik quando si chiama la init() del simulatore dovremo passare anche il dizionario rest come parametro:
+perci√≤ nel main di mosaik quando si chiama la init() del simulatore dovremo passare anche il dizionario rest come parametro:
 
 examplesim = world.start('ExSim', eid_prefix='Model_', rest=rest)
 
 
-Fatto ciÚ torniamo nel nostro simulatore. Infatti ora grazie a questi cambiamenti ogni 10 secondi il simulatore chieder‡ il dato al 
-server indicato, salvando la risposta in un nuovo attributo di dipo dizionario : rest_commands. La struttura di questo dizionario Ë
+Fatto ci√≤ torniamo nel nostro simulatore. Infatti ora grazie a questi cambiamenti ogni 10 secondi il simulatore chieder√† il dato al 
+server indicato, salvando la risposta in un nuovo attributo di dipo dizionario : rest_commands. La struttura di questo dizionario √®
 molto semplice:
 
 rest_commands = {
@@ -303,12 +303,12 @@ rest_commands = {
 Possiamo quindi modificare il metodo step_plus() per poter usare i dati ottenuti dal sensore.
 Bisogna tenere conto che a questo punto diventa compito del programmatore decidere come usare i dati. I vari val1, val2, ecc.. sono tutti
 in formato stringa, quindi possono contenere moltissime informazioni.
-Nel nostro caso il dato che abbiamo richiesto Ë un file che contiene la stringa "Model_0:15", quindi per usarlo dovremo interpretarne il 
+Nel nostro caso il dato che abbiamo richiesto √® un file che contiene la stringa "Model_0:15", quindi per usarlo dovremo interpretarne il 
 significato e poi agire di conseguenza (in questo caso a Model_0 assegneremo un valore di x pari a 15).
 
 Dobbiamo poi decidere una volta usato il dato se vogliamo salvarlo o ci basta averlo usato una volta. Nel nostro caso vogliamo che solo 
 appena letto questo influisca sulla simulazione, mentre vogliamo che dopo questa prosegua regolarmente. Per questo motivo dopo l'uso 
-eliminiamo la chiave x dal dizionario (quando arriver‡ un nuovo dato questa verr‡ aggiunta nuovamente) 
+eliminiamo la chiave x dal dizionario (quando arriver√† un nuovo dato questa verr√† aggiunta nuovamente) 
 
 
 
@@ -358,7 +358,7 @@ END = 10 * 600
 world.run(until=END, rt_factor=0.01)
 
 
-In questo modo la simulazione durer‡ un minuto. Verifichiamo l'andamento di x:
+In questo modo la simulazione durer√† un minuto. Verifichiamo l'andamento di x:
 
 [0, 1, 2, 3, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 15, 13, 11, 9, 7, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 15, 13, 11, ...
 
@@ -368,7 +368,7 @@ timeout il processo si ripete.
 
 Vediamo ora come inserire anche la comunicazione tramite mqtt.
 
-Il procedimento Ë analogo al caso precedente: creiamo i simulatori standard, poi per quelli a cui vogliamo aggiungere il servizio 
+Il procedimento √® analogo al caso precedente: creiamo i simulatori standard, poi per quelli a cui vogliamo aggiungere il servizio 
 sostituiamo i metodi init() e step(). Per comunicare che vogliamo usare mqtt creiamo un dizionario che passeremo all'init().
 
 
@@ -409,13 +409,13 @@ client.publish("test/sensor1/x", "Model_0:100")
 
 
 
-i messaggi sono in formato uguale a quelli ricevuti tramite http (anche qui Ë compito del programmatore sapere come interpretarli e 
-usarli). Notiamo che i primi messaggi vengono inviati con un intervallo di 5 secondi l'uno dall'altro. In questo modo, poichË avevamo
-dato a mqtt il comando di azzerare i timeout, http non viene usato per richiedere il dato. Tra il terzo e il quarto messaggio c'Ë perÚ
+i messaggi sono in formato uguale a quelli ricevuti tramite http (anche qui √® compito del programmatore sapere come interpretarli e 
+usarli). Notiamo che i primi messaggi vengono inviati con un intervallo di 5 secondi l'uno dall'altro. In questo modo, poich√® avevamo
+dato a mqtt il comando di azzerare i timeout, http non viene usato per richiedere il dato. Tra il terzo e il quarto messaggio c'√® per√≤
 un intervallo di 15 secondi, abbastanza da far scadere il timeout e far partire una richiesta http.
-Come prima otteniamo un novo attributo nel nostro simulatore: mqtt_commands (la cui struttura Ë uguale a quella di rest_commands)
+Come prima otteniamo un novo attributo nel nostro simulatore: mqtt_commands (la cui struttura √® uguale a quella di rest_commands)
 Andiamo quindi nel metodo step_plus() per decidere come usare i nuovi dati a disposizione. Come prima vogliamo utilizzarli solo appena
-arrivati e poi eliminarli, quindi step_plus() sar‡:
+arrivati e poi eliminarli, quindi step_plus() sar√†:
 
 
     def step_plus(self, time, inputs):
@@ -450,20 +450,20 @@ Come prima avviamo il server http, il main di mosaik e il sensore e osserviamo l
 
 [0, 1, 2, 3, 4, 20, 18, 16, 14, 12, 10, 8, 6, 0, 1, 2, 3, 4, 5, 6, 4, 5, 20, 18, 16, 14, 12, 10, 8, 6, 4, 5, 6, 4, 5, 6, 4, 5, 15, 13, 11, 9, 7, 5, 6, 4, 5, 100, 98, 96]
 
-il primo messaggio Ë ricevuto tramite mqtt e imposta il valore di x a 20. Dopo 5 secondi arriva un'altro messaggio che lo imposta a 0 e 
-dopo altri 5 nuovamente a 20. Ora per 15 secondi mqtt non mander‡ pi˘ messaggi, facendo scadere il timeout e forzando il simulatore a 
+il primo messaggio √® ricevuto tramite mqtt e imposta il valore di x a 20. Dopo 5 secondi arriva un'altro messaggio che lo imposta a 0 e 
+dopo altri 5 nuovamente a 20. Ora per 15 secondi mqtt non mander√† pi√π messaggi, facendo scadere il timeout e forzando il simulatore a 
 effettuare una richiesta tramite http. Il messaggio di risposta riporta il valore di x a 15, mentre dopo circa 5 secondi mqtt porta il 
 valore a 100
 
 
 Ora vediamo l'ultimo caso in cui vogliamo usare solo mqtt:
 
-Per dire a mosaik che il simulatore use‡ solo mqtt basta non passargli alcun attributo rest.
+Per dire a mosaik che il simulatore use√† solo mqtt basta non passargli alcun attributo rest.
 
 [0, 1, 2, 3, 20, 18, 16, 14, 12, 10, 8, 6, 0, 1, 2, 3, 4, 5, 6, 4, 20, 18, 16, 14, 12, 10, 8, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 100, 98, 96, 94, 92]
 
-questo Ë il risultato di una run con gli stessi parametri di quella precedente, ma senza aver passato il parametro rest.
-Osserviamo che adesso c'Ë un buco di 15 secondi in cui il sensore mqtt non manda messaggi e nient'altro modifica l'andamento del valore
+questo √® il risultato di una run con gli stessi parametri di quella precedente, ma senza aver passato il parametro rest.
+Osserviamo che adesso c'√® un buco di 15 secondi in cui il sensore mqtt non manda messaggi e nient'altro modifica l'andamento del valore
 di x.
 
 
