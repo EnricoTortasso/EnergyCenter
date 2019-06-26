@@ -196,7 +196,7 @@ A questo punto facciamo partire la simulazione:
 Per prima cosa avviamo il server http, poi il simulatore (ho dimenticato di farlo notare ma il simulatore java è in **remoto**, 
 quindi ovviamente questa versione di mosaik supporta la distribuzione), e infine il main di mosaik.
 
-	- pace: [1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, **16.0**, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, **16.0**, 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 3.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 2.0, 3.0, 4.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0]
+- pace: [1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, **16.0**, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, **16.0**, 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 3.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 2.0, 3.0, 4.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0]
  
 Ora a parte il fatto che i valori di **pace** sono rappresentati in float (perchè in java ho voluto considerarli tali), 
 notiamo che ogni 5 secondi il valore subisce un incremento che non rispetta l'andamento abituale.
@@ -319,17 +319,17 @@ Ci siamo collegati a due simulatori, da ognuno dei quali abbiamo creato 2 modell
 occupa di una coppia di modelli. Infine abbiamo connesso i vari modelli tra loro.
 Facciamo partire i due simulatori e il main di mosaik.
 
-	- ExampleSim1-0.Model_0:
-	  - pace: [1.0, 2.0, 3.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, **16.0**, 1.0, 1.0, 1.0, 1.0, 2.0, **16.0**, 1.0]
+- ExampleSim1-0.Model_0:
+  - pace: [1.0, 2.0, 3.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, **16.0**, 1.0, 1.0, 1.0, 1.0, 2.0, **16.0**, 1.0]
 
-	- ExampleSim1-0.Model_1:
-	  - pace: [1.0, 1.0, 2.0, 3.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 3.0]
+- ExampleSim1-0.Model_1:
+  - pace: [1.0, 1.0, 2.0, 3.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 3.0]
 
-	- ExampleSim2-0.Model_0:
-	  - pace: [1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0]
+- ExampleSim2-0.Model_0:
+  - pace: [1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0]
 
-	- ExampleSim2-0.Model_1:
-	  - pace: [1.0, 1.0, 2.0, 1.0, 1.0, **100.0**, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0]
+- ExampleSim2-0.Model_1:
+  - pace: [1.0, 1.0, 2.0, 1.0, 1.0, **100.0**, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0]
   
 Dato il contenuto dei due file ci aspettavamo che solo il primo e l'ultimo modello subissero modifiche, e infatti è così.
 Ora vediamo perchè per funzionare i simulatori e il buffer devono avere lo stesso step:
