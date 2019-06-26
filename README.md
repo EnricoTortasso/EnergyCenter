@@ -11,10 +11,9 @@ crossroad  and a "pace" that is the number of cars that can exit their queue dur
 during a step a random number of cars arrives in each queue and "pace" cars exit their queues according to "verso" value. if the "verso" value
 remain constant in 2 successive steps the value of "pace" is increased by 1, else it is set to 1.
 
-The controller: this simulator can create models of Agents, each capable of coontrolling one or more traffic lights. An Agent receive the queue
+The controller: this simulator can create models of Agents, each capable of controlling one or more traffic lights. An Agent receive the queue
 of the traffic light(s) he is controlling, check which direction contains the highest number of cars and send a command to the simulator 
 setting the "verso" value for the next step.
 
-The controller: this simulator just receive all data from the traffic lights simulator and store them in cronological order until the end of the
-simulation, when he will print them.
+The controller: this simulator just receive all data from the traffic lights simulator and store them in cronological order until the end of the simulation, when he will print them.
 
