@@ -30,8 +30,8 @@ collettore al termine della simulazione
 
 il simulatore deve estendere la classe **Simulator** fornita da Mosaik,
 
-  public class JExampleSim extends Simulator {
-  ...
+    public class JExampleSim extends Simulator {
+    ...
 
 deve possedere un proprio **dizionario di configurazione**,
 
