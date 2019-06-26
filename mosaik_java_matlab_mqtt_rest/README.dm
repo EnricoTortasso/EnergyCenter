@@ -29,7 +29,7 @@ class Buffer(mosaik_api.Simulator):
         super().__init__(META)
         self.eid = "Buffer"
 								#notare: init_plus()
-    def init_plus(self, sid, extra_attrs=None):			#extra_attrs Ë un array di stringhe contenente i nomi degli attributi che gestir‡ il buffer
+    def init_plus(self, sid, extra_attrs=None):			#extra_attrs √® un array di stringhe contenente i nomi degli attributi che gestir√† il buffer
 
         for i in extra_attrs:
             META["models"]["Buffer"]["attrs"].append(i)		#per ogni attributo lo aggiungiamo al meta
@@ -38,7 +38,7 @@ class Buffer(mosaik_api.Simulator):
 
     def create(self, num, model):
 
-        return [{'eid': self.eid, 'type': model}]		#Ë un unico modello, la create Ë fittizia perchË tanto un buffer puÚ esser usato da tutti i simulatori
+        return [{'eid': self.eid, 'type': model}]		#√® un unico modello, la create √® fittizia perch√® tanto un buffer pu√≤ esser usato da tutti i simulatori
 
     def step_plus(self, time, inputs):				#notare: step_plus()
         dic = dict(self.rest_commands)				#copio il dizionario dei comandi in arrivo
@@ -57,11 +57,11 @@ class Buffer(mosaik_api.Simulator):
                     raise ValueError('Unknown output attribute: %s' % attr)
 
                 # Get model.val or model.delta:
-                data[eid][attr] = getattr(self, attr)				#quando qualcuno gli chiede un dato gli d‡ la stringa ricevuta
+                data[eid][attr] = getattr(self, attr)				#quando qualcuno gli chiede un dato gli d√† la stringa ricevuta
 
         for eid, attrs in outputs.items():
             for attr in attrs:
-                setattr(self, attr, None)					#poi la rende nulla finchË non ne ricever‡ un'altra
+                setattr(self, attr, None)					#poi la rende nulla finch√® non ne ricever√† un'altra
 
         return data
 
@@ -75,15 +75,15 @@ if __name__ == '__main__':
 
 
 Questo simulatore Buffer non fa altro che fare da tramite tra il simulatore scritto in java e il "sensore" a cui dovrebbe richiedere i dati.
-È stato scritto nel modo pi˘ generale possibile e dovrebbe andare bene per gestire (**con un unico simulatore**) tutte le necessit‡ di tutti gli
+√© stato scritto nel modo pi√π generale possibile e dovrebbe andare bene per gestire (**con un unico simulatore**) tutte le necessit√† di tutti gli
 altri simulatori non implementati in python.
 Come input in questo esempio ho scelto l'attributo **pace**, che il simulatore vorrebbe conoscere ogni 5 secondi.
 Come fatto per un simulatore capace di usare http/rest per inizializzarlo dobbiamo passargli come argomento una libreria di configurazione:
 
 
 rest = {
-    "address": "127.0.0.1:8000",		#questo Ë il server http a cui connettersi, in questo caso un server sulla stessa macchina
-    "attrs": {					#questo Ë il dizionario che contiene le informazioni relative ad ogni attributo
+    "address": "127.0.0.1:8000",		#questo √® il server http a cui connettersi, in questo caso un server sulla stessa macchina
+    "attrs": {					#questo √® il dizionario che contiene le informazioni relative ad ogni attributo
         "pace": {				#ogni attributo indica:
             "GET": "/x.txt",			#	l'url a cui richiedere il dato,
             "timeout": "5"			#	il tempo tra una richiesta e l'altra
@@ -92,7 +92,7 @@ rest = {
 }
 
 
-quindi il main di mosaik diventer‡:
+quindi il main di mosaik diventer√†:
 
 ## World
 
@@ -120,8 +120,8 @@ END = 10 * 600  # 10 minutes
 world = mosaik.World(SIM_CONFIG)
 
 rest = {
-    "address": "127.0.0.1:8000",		#questo Ë il server http a cui connettersi, in questo caso un server sulla stessa 								macchina
-    "attrs": {					        #questo Ë il dizionario che contiene le informazioni relative ad ogni attributo
+    "address": "127.0.0.1:8000",		#questo √® il server http a cui connettersi, in questo caso un server sulla stessa 								macchina
+    "attrs": {					        #questo √® il dizionario che contiene le informazioni relative ad ogni attributo
         "pace": {					        #ogni attributo indica:
             "GET": "/x.txt",			#	l'url a cui richiedere il dato,
             "timeout": "5"			    #	il tempo tra una richiesta e l'altra
@@ -133,7 +133,7 @@ rest = {
 examplesim = world.start('ExampleSim', eid_prefix='Model_')
 examplectrl = world.start('ExampleCtrl')
 collector = world.start('Collector', step_size=60)
-buffer = world.start("Buffer",extra_attrs=["pace"], rest=rest)		#qui Ë dove passiamo rest e il vettore contenente i nomi degli attributi
+buffer = world.start("Buffer",extra_attrs=["pace"], rest=rest)		#qui √® dove passiamo rest e il vettore contenente i nomi degli attributi
 
 # Instantiate models
 model = examplesim.JModel()
@@ -172,12 +172,12 @@ public long step(long time, Map<String, Object> inputs) {
 			fa le stesse cose di prima
 			...
                 }
-                if (attrName.equals("pace")) {										//sappiamo che il dato in input avr‡ questo nome (glielo abbiamo detto noi nella connect)
+                if (attrName.equals("pace")) {										//sappiamo che il dato in input avr√† questo nome (glielo abbiamo detto noi nella connect)
                     if (((Map<String, Object>)attr.getValue()).values().toArray()[0] == null);				//controlliamo che sia arrivato effettivamente un nuovo dato 
                     else {
-                    	String val = (String) ((Map<String, Object>)attr.getValue()).values().toArray()[0];		//da qui Ë gestione del dato che Ë lasciata al programmatore; in questo istante val contiene la stringa ottenuta con la GET http (in questo caso Model_0:15)
+                    	String val = (String) ((Map<String, Object>)attr.getValue()).values().toArray()[0];		//da qui √® gestione del dato che √® lasciata al programmatore; in questo istante val contiene la stringa ottenuta con la GET http (in questo caso Model_0:15)
                     	String eid = entity.getKey();
-                    	if (val.split(":")[0].equals(eid)) {								//dato che stiamo ciclando sui vari modelli, con questo if controlliamo che il dato sia effettivamente per quel preciso modello (questa Ë UNA implementazione possibile, un dato potrebbe servire a tutti i modelli)
+                    	if (val.split(":")[0].equals(eid)) {								//dato che stiamo ciclando sui vari modelli, con questo if controlliamo che il dato sia effettivamente per quel preciso modello (questa √® UNA implementazione possibile, un dato potrebbe servire a tutti i modelli)
                     		int idx = this.entities.get(eid);
                     		this.simulator.set_pace(idx, Integer.parseInt(val.split(":")[1]));			//settiamo il valore di **pace** al valore arrivato in input 
                     	}
@@ -193,23 +193,23 @@ public long step(long time, Map<String, Object> inputs) {
     }
 
 A questo punto facciamo partire la simulazione:
-Per prima cosa avviamo il server http, poi il simulatore (ho dimenticato di farlo notare ma il simulatore java Ë in **remoto**, 
+Per prima cosa avviamo il server http, poi il simulatore (ho dimenticato di farlo notare ma il simulatore java √® in **remoto**, 
 quindi ovviamente questa versione di mosaik supporta la distribuzione), e infine il main di mosaik.
 
 - pace: [1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, **16.0**, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, **16.0**, 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 3.0, 1.0, 1.0, 2.0, 1.0, 1.0, **16.0**, 1.0, 1.0, 2.0, 3.0, 4.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0]
  
-Ora a parte il fatto che i valori di **pace** sono rappresentati in float (perchË in java ho voluto considerarli tali), 
+Ora a parte il fatto che i valori di **pace** sono rappresentati in float (perch√® in java ho voluto considerarli tali), 
 notiamo che ogni 5 secondi il valore subisce un incremento che non rispetta l'andamento abituale.
 Questo significa che i messaggi tramite **http/rest** vengono ricevuti dal buffer e inoltrati correttamente al simulatore java
-(il messaggio diceva "Model_0:15", in base all'attributo **verso** il 15 verr‡ o incrementato a 16 o riportato a 1, da qui il 
+(il messaggio diceva "Model_0:15", in base all'attributo **verso** il 15 verr√† o incrementato a 16 o riportato a 1, da qui il 
 motivo per cui sembrano esserci dei "buchi" tra i vari 16)
 
 ## Buffer multi-uso
 
 Ora immaginiamo di avere 2 simulatori in java e che ognuno dei due voglia leggere un dato rispettivamente ogni x e y secondi. 
-Non c'Ë bisogno di creare due simulatori Buffer distinti, dato che uno solo puÚ gestire molteplici richieste (**tutti i simulatori 
-perÚ devono avere lo stesso step size**, vedremo dopo il perchË).
-Per facilit‡ prendiamo lo stesso simulatore e creiamone 2 istanze, da ognuno dei quali creiamo 2 modelli distinti, per un totale di 4 modelli.
+Non c'√® bisogno di creare due simulatori Buffer distinti, dato che uno solo pu√≤ gestire molteplici richieste (**tutti i simulatori 
+per√≤ devono avere lo stesso step size**, vedremo dopo il perch√®).
+Per facilit√† prendiamo lo stesso simulatore e creiamone 2 istanze, da ognuno dei quali creiamo 2 modelli distinti, per un totale di 4 modelli.
 Supponiamo di voler che il primo chieda un dato ogni 4 secondi mentre il secondo ogni 7
 
 Nell'init dovremo passare al Buffer:
@@ -273,8 +273,8 @@ END = 10 * 60  # 10 minutes
 world = mosaik.World(SIM_CONFIG)
 
 rest = {
-    "address": "127.0.0.1:8000",		#questo Ë il server http a cui connettersi, in questo caso un server sulla stessa 								macchina
-    "attrs": {					        #questo Ë il dizionario che contiene le informazioni relative ad ogni attributo
+    "address": "127.0.0.1:8000",		#questo √® il server http a cui connettersi, in questo caso un server sulla stessa 								macchina
+    "attrs": {					        #questo √® il dizionario che contiene le informazioni relative ad ogni attributo
         "pace1": {					        #ogni attributo indica:
             "GET": "/x.txt",			#	l'url a cui richiedere il dato,
             "timeout": "4"			    #	il tempo tra una richiesta e l'altra
@@ -331,29 +331,29 @@ Facciamo partire i due simulatori e il main di mosaik.
 - ExampleSim2-0.Model_1:
   - pace: [1.0, 1.0, 2.0, 1.0, 1.0, **100.0**, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0]
   
-Dato il contenuto dei due file ci aspettavamo che solo il primo e l'ultimo modello subissero modifiche, e infatti Ë cosÏ.
-Ora vediamo perchË per funzionare i simulatori e il buffer devono avere lo stesso step:
+Dato il contenuto dei due file ci aspettavamo che solo il primo e l'ultimo modello subissero modifiche, e infatti √® cos√¨.
+Ora vediamo perch√® per funzionare i simulatori e il buffer devono avere lo stesso step:
 
-Immaginiamo che il buffer abbia uno step di 1 unit‡, mentre il simulatore di 2. Mosaik dopo ogni step chiede al buffer i dati da 
+Immaginiamo che il buffer abbia uno step di 1 unit√†, mentre il simulatore di 2. Mosaik dopo ogni step chiede al buffer i dati da 
 mandare al simulatore nello step corrente. Ricordiamo che per come abbiamo implemementato il buffer questo elimina i messaggi una 
 volta inoltrati a mosaik. Ecco cosa potrebbe succedere:
 
 Time 0  1  2  3  4  5  6  7  8  9  10
 Buf  n  15 n  n  15 n  n  15 n  n  15  -> Mosaik
 
-Questo Ë il comportamento che vogliamo dal buffer, ma cosa arriva effettivamente al simulatore?
-Il simulatore chieder‡ il dato solo ogni 2 unit‡ di tempo, quindi
+Questo √® il comportamento che vogliamo dal buffer, ma cosa arriva effettivamente al simulatore?
+Il simulatore chieder√† il dato solo ogni 2 unit√† di tempo, quindi
 
 Time 0  1  2  3  4  5  6  7  8  9  10
 Buf  n  15 n  n  15 n  n  15 n  n  15
 Sim  n     n     15    n     n     15
 
-PerciÚ notiamo che perdiamo 2 dei 4 dati che invece avremmo voluto.
+Perci√≤ notiamo che perdiamo 2 dei 4 dati che invece avremmo voluto.
 Il problema opposto si presenta invece se il simulatore ha uno step inferiore rispetto al buffer:
 
 Time 0  1  2  3  4  5  6  7  8  9  10
 Buf  n     15    n     15    n     15  -> Mosaik
 Sim  n  n  15 15 n  n  15 15 n  n  15
 
-Qui invece anzichË ricevere 3 volte il dato il simulatore lo riceve 5 volte, ed Ë impossibile stabilire quali siano quelli
+Qui invece anzich√® ricevere 3 volte il dato il simulatore lo riceve 5 volte, ed √® impossibile stabilire quali siano quelli
 autentici.
