@@ -335,7 +335,7 @@ Dato il contenuto dei due file ci aspettavamo che solo il primo e l'ultimo model
 Ora vediamo perchè per funzionare i simulatori e il buffer devono avere lo stesso step:
 
 Immaginiamo che il buffer abbia uno step di 1 unità, mentre il simulatore di 2. Mosaik dopo ogni step chiede al buffer i dati da 
-mandare al simulatore nello step corrente. Ricordiamo che per come abbiamo implemementato il buffer questo elimina i messaggi una 
+mandare al simulatore nello step corrente. Ricordiamo che per come abbiamo implementato il buffer questo elimina i messaggi una 
 volta inoltrati a mosaik. Ecco cosa potrebbe succedere:
 
 	Time 0  1  2  3  4  5  6  7  8  9  10
