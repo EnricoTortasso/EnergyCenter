@@ -27,7 +27,6 @@ classdef Model < MosaikAPI.Model
 		
 		function step(this,~,varargin)
 			% Adds defined value to return value.
-
 			this.val = this.val + this.delta; 
 
 		end
