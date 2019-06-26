@@ -35,105 +35,105 @@ il simulatore deve estendere la classe **Simulator** fornita da Mosaik,
 
 deve possedere un proprio **dizionario di configurazione**,
 
-  private static final JSONObject meta = (JSONObject) JSONValue.parse(("{"
-              + "    'api_version': " + Simulator.API_VERSION + ","
-              + "    'models': {"
-              + "        'JModel': {" 
-              + "            'public': true,"
-              + "            'params': ['init_val'],"
-              + "            'attrs': ['queue', 'pace', 'verso']" 
-              + "        }"
-              + "    }" 
-              + "}").replace("'", "\""));
+    private static final JSONObject meta = (JSONObject) JSONValue.parse(("{"
+      + "    'api_version': " + Simulator.API_VERSION + ","
+      + "    'models': {"
+      + "        'JModel': {" 
+      + "            'public': true,"
+      + "            'params': ['init_val'],"
+      + "            'attrs': ['queue', 'pace', 'verso']" 
+      + "        }"
+      + "    }" 
+      + "}").replace("'", "\""));
               
  il suo **costruttore** deve richiamare quello del genitore,
  
-  public JExampleSim() {
-        super("JExampleSim");
-        ...
-    }
+      public JExampleSim() {
+            super("JExampleSim");
+            ...
+        }
               
 deve possedere un metodo **init**,
 
- public Map<String, Object> init(String sid, Map<String, Object> simParams) {
-    	...                                                                          //simParams associa a una stringa un oggetto di qualunque tipo (intero, stringa, vettore, dizionario), sono i \*\*kwargs di python
-    }
+     public Map<String, Object> init(String sid, Map<String, Object> simParams) {
+            ...                                                                          //simParams associa a una stringa un oggetto di qualunque tipo (intero, stringa, vettore, dizionario), sono i \*\*kwargs di python
+        }
     
 un metodo **create**,
 
-  public List<Map<String, Object>> create(int num, String model, Map<String, Object> modelParams) {
-        JSONArray entities = new JSONArray();
-        ...
-        for (int i = 0; i < num; i++) {
+      public List<Map<String, Object>> create(int num, String model, Map<String, Object> modelParams) {
+            JSONArray entities = new JSONArray();
             ...
+            for (int i = 0; i < num; i++) {
+                ...
+                }
+                JSONObject entity = new JSONObject();
+                entity.put("eid", eid);
+                entity.put("type", model);
+                entity.put("rel", new JSONArray());
+                entities.add(entity);
+                ...
             }
-            JSONObject entity = new JSONObject();
-            entity.put("eid", eid);
-            entity.put("type", model);
-            entity.put("rel", new JSONArray());
-            entities.add(entity);
             ...
+            return entities;
         }
-        ...
-        return entities;
-    }
               
 un metodo **step**,
 
-  public long step(long time, Map<String, Object> inputs) {
-    	//go through entities in inputs
-        for (Map.Entry<String, Object> entity : inputs.entrySet()) {
-            //get attrs from entity
-            Map<String, Object> attrs = (Map<String, Object>) entity.getValue();
-            //go through attrs of the entity
-            for (Map.Entry<String, Object> attr : attrs.entrySet()) 
-                String attrName = attr.getKey();
-                if (attrName.equals("<attributo>")) {
-                    ...                                                            //qui attr.values() è una collezione di coppie (agente:valore), usarle di conseguenza
+      public long step(long time, Map<String, Object> inputs) {
+            //go through entities in inputs
+            for (Map.Entry<String, Object> entity : inputs.entrySet()) {
+                //get attrs from entity
+                Map<String, Object> attrs = (Map<String, Object>) entity.getValue();
+                //go through attrs of the entity
+                for (Map.Entry<String, Object> attr : attrs.entrySet()) 
+                    String attrName = attr.getKey();
+                    if (attrName.equals("<attributo>")) {
+                        ...                                                            //qui attr.values() è una collezione di coppie (agente:valore), usarle di conseguenza
+                        }
+                        ...
                     }
-                    ...
                 }
             }
-        }
-        ...
-    return time + this.stepSize;
-  }
+            ...
+        return time + this.stepSize;
+      }
   
 e un metodo **get_data**.
   
-public Map<String, Object> getData(Map<String, List<String>> outputs) {
-        Map<String, Object> data = new HashMap<String, Object>();
-        //*outputs* lists the models and the output values that are requested
-        //go through entities in outputs
-        for (Map.Entry<String, List<String>> entity : outputs.entrySet()) {
-            String eid = entity.getKey();
-            List<String> attrs = entity.getValue();
-            HashMap<String, Object> values = new HashMap<String, Object>();
-            ...
-            //go through attrs of the entity
-            for (String attr : attrs) {
-                if (attr.equals("<attributo>")) {
-                	values.put(attr, <qualunque dato in qualunque formato>);
+    public Map<String, Object> getData(Map<String, List<String>> outputs) {
+            Map<String, Object> data = new HashMap<String, Object>();
+            //*outputs* lists the models and the output values that are requested
+            //go through entities in outputs
+            for (Map.Entry<String, List<String>> entity : outputs.entrySet()) {
+                String eid = entity.getKey();
+                List<String> attrs = entity.getValue();
+                HashMap<String, Object> values = new HashMap<String, Object>();
+                ...
+                //go through attrs of the entity
+                for (String attr : attrs) {
+                    if (attr.equals("<attributo>")) {
+                        values.put(attr, <qualunque dato in qualunque formato>);
+                    }
+                    else if (attr.equals("<un altro attributo>")) {
+                        values.put(attr, <qualunque dato in qualunque formato>);
+                    }
                 }
-                else if (attr.equals("<un altro attributo>")) {
-                	values.put(attr, <qualunque dato in qualunque formato>);
-                }
+                data.put(eid, values);
             }
-            data.put(eid, values);
-        }
-        return data;
-  }
+            return data;
+      }
   
 Infine aggiungiamo un **main**:
 
-  public static void main(String[] args) throws Throwable {
-          Simulator sim = new JExampleSim();
-          //TODO: Implement command line arguments parser (http://commons.apache.org/proper/commons-cli/)
-          if (args.length < 1) {
-            String ipaddr[] = {"127.0.0.1:5678"};
-            SimProcess.startSimulation(ipaddr, sim);
-          }
-          else {
-            SimProcess.startSimulation(args, sim);
-          }     
-      }//main
+      public static void main(String[] args) throws Throwable {
+              Simulator sim = new JExampleSim();
+              //TODO: Implement command line arguments parser (http://commons.apache.org/proper/commons-cli/)
+              if (args.length < 1) {
+                String ipaddr[] = {"127.0.0.1:5678"};
+                SimProcess.startSimulation(ipaddr, sim);
+              }
+              else {
+                SimProcess.startSimulation(args, sim);
+              }     
+          }//main
