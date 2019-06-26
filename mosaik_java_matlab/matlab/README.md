@@ -1,3 +1,5 @@
+# Introduction
+
 I take no credit for this work: I downloaded it from https://github.com/hesstobi/matlab-mosaik-toolbox.
 I updated it to make it work with recent versions of mosaik and matlab.
 
@@ -15,37 +17,37 @@ manage JSON).
 I already made the communication more stable by assuring that even if they call their simulators in different ways, mosaik and matlab 
 still know who they are talking about.
 
-How to build a mosaik compatible simulator in matlab:
+## How to build a mosaik compatible simulator in matlab
   
-  In first place our simulator must be a subclass ( i don't know if matlab call that in this way) of the ModelSimulator class.
+In first place our simulator must be a subclass ( i don't know if matlab call that in this way) of the ModelSimulator class.
   
     classdef ExampleSim < MosaikAPI.ModelSimulator
     
   
-  Our simulator must have in its properties the name of its own models:
+Our simulator must have in its properties the name of its own models:
     
     properties
       providedModels = {'ExModel'}	
     end
 	  
 
-  The constructor method should be like this:
+The constructor method should be like this:
   
     function this = ExampleSim(varargin)
       this = this@MosaikAPI.ModelSimulator(varargin{:});
     end
     
   
-  Ok the core body of our simulator is complete. You can add as many other functions as you want.
+Ok the core body of our simulator is complete. You can add as many other functions as you want.
   
 Our simulator now needs the model that we put in its properties.
-This is how a model in matlab should be built to be used:
-  It must me a subclass of the Model class:
+## how to build a model in matlab
+It must me a subclass of the Model class:
   
     classdef ExModel < MosaikAPI.Model
     
     
-  It must contain its public data in its properties:
+It must contain its public data in its properties:
   
     properties
       delta = 1	
@@ -53,20 +55,20 @@ This is how a model in matlab should be built to be used:
     end
     
     
-  Its constructor should call its parent's:
+Its constructor should call its parent's:
   
     function this = ExampleSim(varargin)
 	this = this@MosaikAPI.ModelSimulator(varargin{:});
     end
     
     
-  And it must implement at least a step():
+And it must implement at least a step():
   
     function step(this,~,varargin)
       this.val = this.val + this.delta; 
     end
   
-  And a meta():
+And a meta():
     
     function value = meta()
       value.public = true;
