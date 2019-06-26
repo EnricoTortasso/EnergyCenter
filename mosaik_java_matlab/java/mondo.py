@@ -38,7 +38,7 @@ model = examplesim.JModel()
 
 agent = examplectrl.Agent.create(1)
 
-monitor = collector.Collector()
+monitor = collector.Monitor()
 
 #odysseus = odysseusModel.Odysseus.create(1)
 #ody = odysseus[0]
