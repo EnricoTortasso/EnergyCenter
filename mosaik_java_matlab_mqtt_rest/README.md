@@ -333,8 +333,9 @@ Facciamo partire i due simulatori e il main di mosaik.
   - pace: [1.0, 1.0, 2.0, 1.0, 1.0, **100.0**, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0]
   
 Dato il contenuto dei due file ci aspettavamo che solo il primo e l'ultimo modello subissero modifiche, e infatti è così.
-Ora vediamo perchè per funzionare i simulatori e il buffer devono avere lo stesso step:
 
+
+Ora vediamo perchè per funzionare i simulatori e il buffer devono avere lo stesso step:
 Immaginiamo che il buffer abbia uno step di 1 unità, mentre il simulatore di 2. Mosaik dopo ogni step chiede al buffer i dati da 
 mandare al simulatore nello step corrente. Ricordiamo che per come abbiamo implementato il buffer questo elimina i messaggi una 
 volta inoltrati a mosaik. Ecco cosa potrebbe succedere:
@@ -360,4 +361,24 @@ Qui invece anzichè ricevere 3 volte il dato il simulatore lo riceve 5 volte, ed
 autentici.
 
 
-# Buffer per simulatori
+# Buffer asincrono per simulatori con step differenti
+
+Mosaik presenta al suo interno anche la possibilità da parte di un simulatore di mandare a un altro dei dati validi solo per 
+lo step successivo di ques'ultimo. Sfruttando questa caratteristica possiamo realizzare un buffer definito **asincrono**, in quanto
+i dati che manderà possono non avere tempistiche prefissate. Il pregio principale di questo tipo di buffer è la possibilità di 
+interagire con simulatori che hanno step diversi dal proprio (superiore, per evitare ritardi nell'arrivo dei dati).
+
+Per prima cosa dobbiamo modificare la funzione **step_plus** del nostro buffer, che sarà ora responsabile di mandare i dati dal 
+buffer al simulatore usando la chiamata **set_data**. Come detto in precedenza, nella step_plus, a differenza della step, il valore
+di ritorno della set_data viene ritornato come secondo argomento della return, anzichè attraverso uno yield.
+
+## step_plus
+
+	def step_plus(self, time, inputs):				
+		dic = dict(self.rest_commands)				
+		for attr, val in dic.items():
+			setattr(self, attr, val)				
+			del self.rest_commands[attr]			
+
+		return time + 60  
+
