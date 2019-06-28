@@ -1,4 +1,4 @@
-# Tutorial: collegare simulatori java e matlab a servizi mqtt e http
+﻿# Tutorial: collegare simulatori java e matlab a servizi mqtt e http
 
 
 Prendiamo il simulatore in java che abbiamo usato in precedenza. Vogliamo che ogni 5 secondi richieda
@@ -9,6 +9,7 @@ dovremo usarne uno che faccia da intermediario.
 Creiamo quindi un simulatore fittizio, il cui unico scopo sia quello di ricevere i messaggi e mandarli
 a chi di dovere.
 
+# Single Buffer
 ## Buffer
 
 	import mosaik_api
@@ -204,12 +205,12 @@ Questo significa che i messaggi tramite **http/rest** vengono ricevuti dal buffe
 (il messaggio diceva "Model_0:15", in base all'attributo **verso** il 15 verrà o incrementato a 16 o riportato a 1, da qui il 
 motivo per cui sembrano esserci dei "buchi" tra i vari 16)
 
-## Buffer multi-uso
+# Multi Buffer
 
 Ora immaginiamo di avere 2 simulatori in java e che ognuno dei due voglia leggere un dato rispettivamente ogni x e y secondi. 
 Non c'è bisogno di creare due simulatori Buffer distinti, dato che uno solo può gestire molteplici richieste (**tutti i simulatori 
 però devono avere lo stesso step size**, vedremo dopo il perchè).
-Per facilità prendiamo lo stesso simulatore e creiamone 2 istanze, da ognuno dei quali creiamo 2 modelli distinti, per un totale di 4 modelli.
+Per facilità prendiamo lo stesso simulatore e creiamone 2 istanze, da ognuna delle quali creiamo 2 modelli distinti, per un totale di 4 modelli.
 Supponiamo di voler che il primo chieda un dato ogni 4 secondi mentre il secondo ogni 7
 
 Nell'init dovremo passare al Buffer:
@@ -303,7 +304,7 @@ modifichiamo anche il main di mosaik
 
 
 	# Connect entities
-	world.connect(buffer, model1[0], ("pace1", "pace"))
+	world.connect(buffer, model1[0], ("pace1", "pace"))				
 	world.connect(buffer, model1[1], ("pace1", "pace"))
 	world.connect(buffer, model2[0], ("pace2", "pace"))
 	world.connect(buffer, model2[1], ("pace2", "pace"))
@@ -316,7 +317,7 @@ modifichiamo anche il main di mosaik
 
 
 Ci siamo collegati a due simulatori, da ognuno dei quali abbiamo creato 2 modelli. Abbiamo poi creato due controllori, ognuno che si 
-occupa di una coppia di modelli. Infine abbiamo connesso i vari modelli tra loro.
+occupa di una coppia di modelli. Infine abbiamo connesso i vari modelli tra loro. 
 Facciamo partire i due simulatori e il main di mosaik.
 
 - ExampleSim1-0.Model_0:
@@ -357,3 +358,6 @@ Il problema opposto si presenta invece se il simulatore ha uno step inferiore ri
 
 Qui invece anzichè ricevere 3 volte il dato il simulatore lo riceve 5 volte, ed è impossibile stabilire quali siano quelli
 autentici.
+
+
+# Buffer per simulatori

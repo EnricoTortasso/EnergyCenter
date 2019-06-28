@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fmiModelDescription
+  fmiVersion="2.0"
+  modelName="myvdp"
+  guid="{a50ebd80-9a0f-b492-4bf4-893f9611b1a5}"
+  description="The van der Pol Equation. This is a simulation of a nonlinear second order system."
+  author="Simulink (R2019a)"
+  variableNamingConvention="structured"
+  generationDateAndTime="2018-09-26T19:47:29Z"
+  numberOfEventIndicators="0">
+
+<CoSimulation
+  modelIdentifier="myvdp"
+  canBeInstantiatedOnlyOncePerProcess="true"
+  canNotUseMemoryManagementFunctions="true"
+  canGetAndSetFMUstate="true"
+  canSerializeFMUstate="true"
+  />
+<DefaultExperiment startTime="0" stopTime="20" stepSize="0.4"/>
+<VendorAnnotations>
+  <Tool name="Simulink FMU CS Export"> </Tool>
+</VendorAnnotations>
+<ModelVariables>
+  <ScalarVariable name="Out1" valueReference="0" description="Out1" causality="output" variability="continuous" initial="calculated">
+    <Real  />
+  </ScalarVariable> <!-- index="1" -->
+  <ScalarVariable name="Out2" valueReference="1" description="Out2" causality="output" variability="continuous" initial="calculated">
+    <Real  />
+  </ScalarVariable> <!-- index="2" -->
+  <ScalarVariable name="mu" valueReference="2" description="parameter" causality="parameter" variability="tunable" initial="exact">
+    <Real start="1"/>
+  </ScalarVariable> <!-- index="4" -->
+  <ScalarVariable name="time" valueReference="3" description="time" causality="independent" variability="continuous" >
+    <Real  />
+  </ScalarVariable> <!-- index="3" -->
+</ModelVariables>
+<ModelStructure>
+  <Outputs>
+    <Unknown index="1" />
+    <Unknown index="2" />
+  </Outputs>
+  <InitialUnknowns>
+    <Unknown index="1" />
+    <Unknown index="2" />
+  </InitialUnknowns>
+</ModelStructure>
+</fmiModelDescription>
+
