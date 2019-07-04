@@ -26,21 +26,21 @@ al topic corrispondente al proprio nome, su quale riceverà tutte le istruzioni 
 Step e get_data sono i due metodi più usati di mosaik, e il loro protocollo di scambio di messaggi con i simulatori è 
 quasi identico. Vediamo in particolare il metodo step:
 
-mosaik ->     "<Simulator_ID>/in/step"    "[<starting_step_time>, <inputs>]"
-mosaik blocca il semaforo del simulatore corrente
-mosaik aspetta il semaforo
-...
-simulator riceve il messaggio
+	mosaik ->     "<Simulator_ID>/in/step"    "[<starting_step_time>, <inputs>]"
+	mosaik blocca il semaforo del simulatore corrente
+	mosaik aspetta il semaforo
 	...
-simulator esegue step()
+	simulator riceve il messaggio
+		...
+	simulator esegue step()
+		...
+	simulator ->  "<Simulator_ID>/out/step"   "<next_time>"
 	...
-simulator ->  "<Simulator_ID>/out/step"   "<next_time>"
-...
-mosaik riceve il messaggio
-	...
-l'handler dei messaggi sblocca il semaforo del simulatore corrente
-	...
-mosaik riprende l'esecuzione
+	mosaik riceve il messaggio
+		...
+	l'handler dei messaggi sblocca il semaforo del simulatore corrente
+		...
+	mosaik riprende l'esecuzione
 
 
 é da notare nel file controller.py come vengono gestiti i loop in questa nuova versione di mosaik. Nella versione originale
