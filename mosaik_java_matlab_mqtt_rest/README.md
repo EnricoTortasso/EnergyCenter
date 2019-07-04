@@ -360,6 +360,7 @@ Il problema opposto si presenta invece se il simulatore ha uno step inferiore ri
 Qui invece anzichè ricevere 3 volte il dato il simulatore lo riceve 5 volte, ed è impossibile stabilire quali siano quelli
 autentici.
 
+# Non terminato
 
 # Buffer asincrono per simulatori con step differenti
 
@@ -367,6 +368,8 @@ Mosaik presenta al suo interno anche la possibilità da parte di un simulatore d
 lo step successivo di ques'ultimo. Sfruttando questa caratteristica possiamo realizzare un buffer definito **asincrono**, in quanto
 i dati che manderà possono non avere tempistiche prefissate. Il pregio principale di questo tipo di buffer è la possibilità di 
 interagire con simulatori che hanno step diversi dal proprio (superiore, per evitare ritardi nell'arrivo dei dati).
+
+
 
 Per prima cosa dobbiamo modificare la funzione **step_plus** del nostro buffer, che sarà ora responsabile di mandare i dati dal 
 buffer al simulatore usando la chiamata **set_data**. Come detto in precedenza, nella step_plus, a differenza della step, il valore
